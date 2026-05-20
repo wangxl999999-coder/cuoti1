@@ -1,0 +1,52 @@
+<view class="container">
+  <view class="header-section card">
+    <view class="subject-row">
+      <view class="subject-tag" style="background: {{subjectColor}}">
+        {{subjectIcon}} {{subjectName}}
+      </view>
+      <view class="mastery-tag" style="background: {{masteryColor}}">
+        {{masteryName}}
+      </view>
+    </view>
+    <view class="grade-info">{{question.grade}} · {{question.difficulty}}⭐难度</view>
+  </view>
+
+  <view class="question-section card">
+    <view class="section-title">题目内容</view>
+    <view wx:if="{{question.questionImage}}" class="question-image">
+      <image src="{{question.questionImage}}" mode="widthFix" bindtap="previewImage"></image>
+    </view>
+    <view class="question-text">{{question.question}}</view>
+    <view class="knowledge-tags">
+      <view wx:for="{{question.knowledge}}" wx:key="*this" class="knowledge-tag">{{item}}</view>
+    </view>
+  </view>
+
+  <view class="error-section card">
+    <view class="section-title">
+      <text>错误解法</text>
+      <view class="error-reason-tag">{{errorReasonName}}</view>
+    </view>
+    <view class="wrong-answer">{{question.wrongAnswer || '暂无记录'}}</view>
+  </view>
+
+  <view class="correct-section card">
+    <view class="section-title">正确解析</view>
+    <view class="correct-answer">{{question.correctAnswer || '暂无记录'}}</view>
+  </view>
+
+  <view class="action-section card">
+    <view class="section-title">掌握状态</view>
+    <view class="mastery-buttons">
+      <view wx:for="{{masteryLevels}}" wx:key="id" class="mastery-btn {{currentMastery === item.id ? 'active' : ''}}" bindtap="updateMastery" data-mastery="{{item.id}}" style="background: {{currentMastery === item.id ? item.color : ''}}">
+        {{item.name}}
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-actions">
+    <button class="action-btn delete-btn" bindtap="deleteQuestion">删除</button>
+    <button class="action-btn edit-btn" bindtap="editQuestion">编辑</button>
+    <button class="action-btn practice-btn" bindtap="practiceOne">单独练习</button>
+  </view>
+</view>

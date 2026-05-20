@@ -1,0 +1,131 @@
+<view class="container">
+  <view class="input-method card">
+    <view class="section-title">录入方式</view>
+    <view class="method-buttons">
+      <view class="method-btn {{inputMethod === 'photo' ? 'active' : ''}}" bindtap="switchMethod" data-method="photo">
+        <view class="method-icon">📷</view>
+        <view class="method-text">拍照</view>
+      </view>
+      <view class="method-btn {{inputMethod === 'text' ? 'active' : ''}}" bindtap="switchMethod" data-method="text">
+        <view class="method-icon">⌨️</view>
+        <view class="method-text">文字</view>
+      </view>
+      <view class="method-btn {{inputMethod === 'voice' ? 'active' : ''}}" bindtap="switchMethod" data-method="voice">
+        <view class="method-icon">🎤</view>
+        <view class="method-text">语音</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{inputMethod === 'photo'}}" class="photo-section card">
+    <view class="section-title">拍照录入</view>
+    <view class="photo-area" bindtap="chooseImage">
+      <view wx:if="{{!questionImage}}" class="photo-placeholder">
+        <view class="placeholder-icon">📷</view>
+        <view class="placeholder-text">点击拍照或选择图片</view>
+      </view>
+      <image wx:else src="{{questionImage}}" mode="aspectFit" class="preview-image"></image>
+    </view>
+    <view wx:if="{{questionImage}}" class="image-actions">
+      <button class="reselect-btn" bindtap="chooseImage">重新选择</button>
+      <view class="ocr-tip">💡 建议拍摄清晰的题目图片</view>
+    </view>
+  </view>
+
+  <view wx:if="{{inputMethod === 'voice'}}" class="voice-section card">
+    <view class="section-title">语音录入</view>
+    <view class="voice-area">
+      <view class="record-btn {{isRecording ? 'recording' : ''}}" bindtap="toggleRecording">
+        <view class="record-icon">{{isRecording ? '⏹' : '🎤'}}</view>
+        <view class="record-text">{{isRecording ? '松开结束' : '按住说话'}}</view>
+      </view>
+      <view class="voice-status">
+        <text wx:if="{{isRecording}}" class="recording-text">录音中... {{recordDuration}}s</text>
+        <text wx:elif="{{voicePath}}" class="recorded-text">已录音，点击播放</text>
+        <text wx:else class="tip-text">点击按钮开始录音</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="question-input card">
+    <view class="section-title">题目内容</view>
+    <textarea class="question-textarea" placeholder="请输入题目内容..." value="{{question}}" bindinput="onQuestionInput" auto-height maxlength="2000"></textarea>
+  </view>
+
+  <view class="category-section card">
+    <view class="section-title">分类信息</view>
+    
+    <view class="picker-row">
+      <text class="picker-label">学科:</text>
+      <picker bindchange="onSubjectChange" value="{{subjectIndex}}" range="{{subjectNames}}">
+        <view class="picker-value {{subjectIndex >= 0 ? '' : 'placeholder'}}">
+          {{subjectIndex >= 0 ? subjectNames[subjectIndex] : '请选择学科'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="picker-row">
+      <text class="picker-label">年级:</text>
+      <picker bindchange="onGradeChange" value="{{gradeIndex}}" range="{{gradeNames}}">
+        <view class="picker-value {{gradeIndex >= 0 ? '' : 'placeholder'}}">
+          {{gradeIndex >= 0 ? gradeNames[gradeIndex] : '请选择年级'}}
+        </view>
+      </picker>
+    </view>
+
+    <view class="knowledge-section">
+      <text class="picker-label">知识点标签:</text>
+      <view class="knowledge-tags">
+        <view wx:for="{{defaultKnowledge}}" wx:key="*this" class="knowledge-tag {{selectedKnowledge.includes(item) ? 'active' : ''}}" bindtap="toggleKnowledge" data-tag="{{item}}">
+          {{item}}
+        </view>
+      </view>
+      <view class="custom-knowledge">
+        <input class="custom-input" placeholder="添加自定义标签" value="{{customTag}}" bindinput="onCustomTagInput" confirm-type="done" bindconfirm="addCustomTag"/>
+        <button class="add-tag-btn" size="mini" bindtap="addCustomTag">添加</button>
+      </view>
+      <view class="selected-tags" wx:if="{{selectedKnowledge.length > 0}}">
+        <text>已选: </text>
+        <view wx:for="{{selectedKnowledge}}" wx:key="*this" class="selected-tag">
+          {{item}} ✕
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="error-info card">
+    <view class="section-title">错误信息</view>
+    
+    <view class="error-reason-section">
+      <text class="picker-label">错误原因:</text>
+      <view class="reason-tags">
+        <view wx:for="{{errorReasons}}" wx:key="id" class="reason-tag {{errorReason === item.id ? 'active' : ''}}" bindtap="selectErrorReason" data-reason="{{item.id}}">
+          {{item.icon}} {{item.name}}
+        </view>
+      </view>
+    </view>
+
+    <view class="difficulty-section">
+      <text class="picker-label">难度等级:</text>
+      <view class="difficulty-stars">
+        <view wx:for="{{5}}" wx:key="index" class="star {{index < difficulty ? 'active' : ''}}" bindtap="setDifficulty" data-level="{{index + 1}}">
+          ⭐
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="answer-section card">
+    <view class="section-title">错误解法</view>
+    <textarea class="answer-textarea" placeholder="记录当时的错误解答过程..." value="{{wrongAnswer}}" bindinput="onWrongAnswerInput" auto-height maxlength="2000"></textarea>
+  </view>
+
+  <view class="correct-section card">
+    <view class="section-title">正确解析</view>
+    <textarea class="answer-textarea" placeholder="输入正确答案和解题思路..." value="{{correctAnswer}}" bindinput="onCorrectAnswerInput" auto-height maxlength="2000"></textarea>
+  </view>
+
+  <view class="submit-section">
+    <button class="submit-btn btn-primary" bindtap="submitQuestion">保存错题</button>
+  </view>
+</view>

@@ -1,0 +1,133 @@
+.subject-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.subject-tag, .mastery-tag {
+  padding: 10rpx 24rpx;
+  border-radius: 30rpx;
+  color: #fff;
+  font-size: 26rpx;
+}
+
+.grade-info {
+  color: #666;
+  font-size: 26rpx;
+}
+
+.question-image {
+  margin-bottom: 20rpx;
+}
+
+.question-image image {
+  width: 100%;
+  border-radius: 12rpx;
+}
+
+.question-text {
+  font-size: 32rpx;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.knowledge-tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.knowledge-tag {
+  background: #E3F2FD;
+  color: #4A90E2;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  margin-right: 16rpx;
+  margin-bottom: 12rpx;
+}
+
+.error-section .section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-reason-tag {
+  background: #E74C3C;
+  color: #fff;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.wrong-answer {
+  font-size: 30rpx;
+  line-height: 1.7;
+  color: #E74C3C;
+  padding: 20rpx;
+  background: #FFF5F5;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #E74C3C;
+}
+
+.correct-answer {
+  font-size: 30rpx;
+  line-height: 1.7;
+  color: #2ECC71;
+  padding: 20rpx;
+  background: #F0FFF4;
+  border-radius: 12rpx;
+  border-left: 6rpx solid #2ECC71;
+}
+
+.mastery-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.mastery-btn {
+  flex: 1;
+  min-width: 140rpx;
+  padding: 20rpx;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.mastery-btn.active {
+  color: #fff;
+}
+
+.bottom-actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 40rpx 0 80rpx;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}
+
+.delete-btn {
+  background: #FFF5F5;
+  color: #E74C3C;
+}
+
+.edit-btn {
+  background: #FFF8E6;
+  color: #F39C12;
+}
+
+.practice-btn {
+  background: #E3F2FD;
+  color: #4A90E2;
+}

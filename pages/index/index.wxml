@@ -1,0 +1,84 @@
+<view class="container">
+  <view class="header">
+    <view class="stats-row">
+      <view class="stat-item">
+        <view class="stat-number">{{totalCount}}</view>
+        <view class="stat-label">错题总数</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{pendingCount}}</view>
+        <view class="stat-label">待订正</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{masteredCount}}</view>
+        <view class="stat-label">已掌握</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="filter-section card">
+    <view class="filter-header">
+      <text class="section-title">筛选</text>
+      <text class="clear-filter" bindtap="clearFilter">重置</text>
+    </view>
+    
+    <view class="filter-row">
+      <text class="filter-label">学科:</text>
+      <scroll-view scroll-x class="tag-scroll">
+        <view class="tag {{filterSubject === '' ? 'tag-active' : 'tag-normal'}}" bindtap="filterBySubject" data-subject="">全部</view>
+        <view wx:for="{{subjects}}" wx:key="key" class="tag {{filterSubject === item.key ? 'tag-active' : 'tag-normal'}}" bindtap="filterBySubject" data-subject="{{item.key}}" style="background: {{filterSubject === item.key ? item.value.color : ''}}; color: {{filterSubject === item.key ? '#fff' : ''}}">
+          {{item.value.icon}} {{item.value.name}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="filter-row">
+      <text class="filter-label">掌握程度:</text>
+      <view class="tag-group">
+        <view class="tag {{filterMastery === '' ? 'tag-active' : 'tag-normal'}}" bindtap="filterByMastery" data-mastery="">全部</view>
+        <view wx:for="{{masteryLevels}}" wx:key="id" class="tag {{filterMastery === item.id ? 'tag-active' : 'tag-normal'}}" bindtap="filterByMastery" data-mastery="{{item.id}}" style="background: {{filterMastery === item.id ? item.color : ''}}">
+          {{item.name}}
+        </view>
+      </view>
+    </view>
+
+    <view class="filter-row">
+      <text class="filter-label">错误原因:</text>
+      <scroll-view scroll-x class="tag-scroll">
+        <view class="tag {{filterReason === '' ? 'tag-active' : 'tag-normal'}}" bindtap="filterByReason" data-reason="">全部</view>
+        <view wx:for="{{errorReasons}}" wx:key="id" class="tag {{filterReason === item.id ? 'tag-active' : 'tag-normal'}}" bindtap="filterByReason" data-reason="{{item.id}}">
+          {{item.icon}} {{item.name}}
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+
+  <view class="question-list">
+    <view wx:if="{{filteredQuestions.length === 0}}" class="empty-state">
+      <view class="empty-icon">📚</view>
+      <view class="empty-text">暂无错题，快去记录吧！</view>
+    </view>
+
+    <view wx:for="{{filteredQuestions}}" wx:key="id" class="question-card card" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="question-header">
+        <view class="subject-tag" style="background: {{getSubjectColor(item.subject)}}">
+          {{getSubjectIcon(item.subject)}} {{getSubjectName(item.subject)}}
+        </view>
+        <view class="mastery-tag" style="background: {{getMasteryColor(item.mastery)}}">
+          {{getMasteryName(item.mastery)}}
+        </view>
+      </view>
+
+      <view class="question-content">
+        <text class="question-text">{{item.question}}</text>
+      </view>
+
+      <view class="question-footer">
+        <view class="knowledge-tags">
+          <view wx:for="{{item.knowledge}}" wx:key="*this" class="knowledge-tag">{{item}}</view>
+        </view>
+        <view class="time-text">{{formatTime(item.createTime)}}</view>
+      </view>
+    </view>
+  </view>
+</view>

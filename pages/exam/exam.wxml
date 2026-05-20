@@ -1,0 +1,150 @@
+<view class="container">
+  <view wx:if="{{!isStarted && !isCompleted}}" class="start-section card">
+    <view class="exam-icon">📝</view>
+    <view class="exam-title">重做挑战</view>
+    <view class="exam-desc">在规定时间内完成错题，检验学习成果</view>
+
+    <view class="setting-section">
+      <view class="setting-row">
+        <text class="setting-label">题目数量:</text>
+        <view class="setting-buttons">
+          <view wx:for="{{countOptions}}" wx:key="*this" class="count-btn {{questionCount === item ? 'active' : ''}}" bindtap="setQuestionCount" data-count="{{item}}">
+            {{item}}题
+          </view>
+        </view>
+      </view>
+
+      <view class="setting-row">
+        <text class="setting-label">时间限制:</text>
+        <view class="setting-buttons">
+          <view wx:for="{{timeOptions}}" wx:key="*this" class="time-btn {{timeLimit === item ? 'active' : ''}}" bindtap="setTimeLimit" data-time="{{item}}">
+            {{item}}分钟
+          </view>
+        </view>
+      </view>
+
+      <view class="setting-row">
+        <text class="setting-label">筛选学科:</text>
+        <scroll-view scroll-x class="tag-scroll">
+          <view class="tag {{filterSubject === '' ? 'tag-active' : 'tag-normal'}}" bindtap="setFilterSubject" data-subject="">全部</view>
+          <view wx:for="{{subjects}}" wx:key="key" class="tag {{filterSubject === item.key ? 'tag-active' : 'tag-normal'}}" bindtap="setFilterSubject" data-subject="{{item.key}}" style="background: {{filterSubject === item.key ? item.value.color : ''}}; color: {{filterSubject === item.key ? '#fff' : ''}}">
+            {{item.value.icon}} {{item.value.name}}
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+
+    <view class="available-text">可选题目: {{availableCount}} 道</view>
+
+    <button class="start-btn btn-primary" bindtap="startExam" disabled="{{availableCount === 0}}">
+      开始挑战
+    </button>
+  </view>
+
+  <view wx:if="{{isStarted && !isCompleted}}" class="exam-container">
+    <view class="exam-header card">
+      <view class="header-row">
+        <view class="header-item">
+          <text class="header-label">题目</text>
+          <text class="header-value">{{currentIndex + 1}}/{{examList.length}}</text>
+        </view>
+        <view class="header-item">
+          <text class="header-label">时间</text>
+          <text class="header-value {{timeRemaining < 60 ? 'warning' : ''}}">
+            {{formatTime(timeRemaining)}}
+          </text>
+        </view>
+      </view>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progressPercent}}%"></view>
+      </view>
+    </view>
+
+    <view class="question-card card">
+      <view class="question-header">
+        <view class="subject-tag" style="background: {{subjectColor}}">
+          {{subjectIcon}} {{subjectName}}
+        </view>
+      </view>
+
+      <view wx:if="{{currentQuestion.questionImage}}" class="question-image">
+        <image src="{{currentQuestion.questionImage}}" mode="widthFix"></image>
+      </view>
+      <view class="question-text">{{currentQuestion.question}}</view>
+    </view>
+
+    <view class="answer-card card">
+      <view class="section-title">你的答案</view>
+      <textarea class="answer-input" placeholder="输入你的解答..." value="{{userAnswer}}" bindinput="onAnswerInput" auto-height></textarea>
+    </view>
+
+    <view class="exam-actions">
+      <button class="nav-btn" bindtap="prevQuestion" disabled="{{currentIndex === 0}}">
+        上一题
+      </button>
+      <button class="submit-btn btn-primary" bindtap="submitExam">
+        交卷
+      </button>
+      <button class="nav-btn" bindtap="nextQuestion" disabled="{{currentIndex === examList.length - 1}}">
+        下一题
+      </button>
+    </view>
+  </view>
+
+  <view wx:if="{{isCompleted}}" class="result-section card">
+    <view class="result-icon">{{score >= 60 ? '🎉' : '💪'}}</view>
+    <view class="result-title">{{score >= 60 ? '挑战完成！' : '继续加油！'}}</view>
+    
+    <view class="score-display">
+      <text class="score-number">{{score}}</text>
+      <text class="score-unit">分</text>
+    </view>
+
+    <view class="result-stats">
+      <view class="stat-item">
+        <view class="stat-number">{{correctCount}}</view>
+        <view class="stat-label">正确</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{wrongCount}}</view>
+        <view class="stat-label">错误</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{usedTime}}</view>
+        <view class="stat-label">用时(秒)</view>
+      </view>
+    </view>
+
+    <view class="result-actions">
+      <button class="action-btn review-btn" bindtap="reviewAnswers">
+        查看解析
+      </button>
+      <button class="action-btn retry-btn" bindtap="retryExam">
+        再来一次
+      </button>
+    </view>
+  </view>
+
+  <view wx:if="{{showReview}}" class="review-section">
+    <view class="review-header card">
+      <text class="section-title">答案解析</text>
+    </view>
+
+    <view wx:for="{{examList}}" wx:key="id" class="review-card card">
+      <view class="review-number">第 {{index + 1}} 题 {{userAnswers[index] ? '✓' : '?'}}</view>
+      <view class="question-text">{{item.question}}</view>
+      
+      <view class="answer-block">
+        <view class="answer-label">你的答案:</view>
+        <view class="answer-text">{{userAnswers[index] || '未作答'}}</view>
+      </view>
+
+      <view class="answer-block correct">
+        <view class="answer-label">正确答案:</view>
+        <view class="answer-text">{{item.correctAnswer || '暂无'}}</view>
+      </view>
+    </view>
+
+    <button class="back-btn btn-secondary" bindtap="closeReview">返回</button>
+  </view>
+</view>

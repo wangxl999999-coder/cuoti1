@@ -1,0 +1,116 @@
+<view class="container">
+  <view wx:if="{{!currentQuestion}}" class="empty-state">
+    <view class="empty-icon">🎯</view>
+    <view class="empty-text">选择错题开始练习</view>
+  </view>
+
+  <view wx:if="{{currentQuestion}}" class="practice-container">
+    <view class="progress-section">
+      <view class="progress-text">第 {{currentIndex + 1}} / {{practiceList.length}} 题</view>
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{progressPercent}}%"></view>
+      </view>
+    </view>
+
+    <view class="question-card card">
+      <view class="question-header">
+        <view class="subject-tag" style="background: {{subjectColor}}">
+          {{subjectIcon}} {{subjectName}}
+        </view>
+      </view>
+
+      <view wx:if="{{currentQuestion.questionImage}}" class="question-image">
+        <image src="{{currentQuestion.questionImage}}" mode="widthFix"></image>
+      </view>
+      <view class="question-text">{{currentQuestion.question}}</view>
+
+      <view class="knowledge-tags">
+        <view wx:for="{{currentQuestion.knowledge}}" wx:key="*this" class="knowledge-tag">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="answer-section card" wx:if="{{showAnswer}}">
+      <view class="section-title">
+        <text class="wrong-title">❌ 错误解法</text>
+      </view>
+      <view class="wrong-answer">{{currentQuestion.wrongAnswer || '暂无记录'}}</view>
+      
+      <view class="divider"></view>
+      
+      <view class="section-title">
+        <text class="correct-title">✅ 正确解析</text>
+      </view>
+      <view class="correct-answer">{{currentQuestion.correctAnswer || '暂无记录'}}</view>
+    </view>
+
+    <view class="action-buttons">
+      <button wx:if="{{!showAnswer}}" class="show-answer-btn btn-primary" bindtap="showAnswerClick">
+        显示答案
+      </button>
+      
+      <view wx:if="{{showAnswer}}" class="answer-actions">
+        <button class="action-btn wrong-btn" bindtap="markWrong">
+          ❌ 还没掌握
+        </button>
+        <button class="action-btn correct-btn" bindtap="markCorrect">
+          ✅ 已掌握
+        </button>
+      </view>
+    </view>
+
+    <view wx:if="{{showAnswer && practiceList.length > 1}}" class="nav-buttons">
+      <button class="nav-btn" bindtap="prevQuestion" disabled="{{currentIndex === 0}}">
+        ← 上一题
+      </button>
+      <button class="nav-btn" bindtap="nextQuestion" disabled="{{currentIndex === practiceList.length - 1}}">
+        下一题 →
+      </button>
+    </view>
+  </view>
+
+  <view wx:if="{{!currentQuestion && allQuestions.length > 0}}" class="select-section card">
+    <view class="section-title">选择练习题目</view>
+    
+    <view class="filter-row">
+      <text class="filter-label">学科:</text>
+      <scroll-view scroll-x class="tag-scroll">
+        <view class="tag {{selectSubject === '' ? 'tag-active' : 'tag-normal'}}" bindtap="selectFilterSubject" data-subject="">全部</view>
+        <view wx:for="{{subjects}}" wx:key="key" class="tag {{selectSubject === item.key ? 'tag-active' : 'tag-normal'}}" bindtap="selectFilterSubject" data-subject="{{item.key}}" style="background: {{selectSubject === item.key ? item.value.color : ''}}; color: {{selectSubject === item.key ? '#fff' : ''}}">
+          {{item.value.icon}} {{item.value.name}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="question-select-list">
+      <view wx:for="{{filteredQuestions}}" wx:key="id" class="select-item {{selectedIds.includes(item.id) ? 'selected' : ''}}" bindtap="toggleSelect" data-id="{{item.id}}">
+        <view class="select-checkbox">{{selectedIds.includes(item.id) ? '✓' : ''}}</view>
+        <view class="select-content">
+          <view class="select-subject" style="color: {{getSubjectColor(item.subject)}}">
+            {{getSubjectIcon(item.subject)}} {{getSubjectName(item.subject)}}
+          </view>
+          <view class="select-text">{{item.question}}</view>
+        </view>
+      </view>
+    </view>
+
+    <button class="start-practice-btn btn-primary" bindtap="startPractice" disabled="{{selectedIds.length === 0}}">
+      开始练习 ({{selectedIds.length}}题)
+    </button>
+  </view>
+
+  <view wx:if="{{isCompleted}}" class="completed-section card">
+    <view class="completed-icon">🎉</view>
+    <view class="completed-title">练习完成！</view>
+    <view class="completed-stats">
+      <view class="stat-item">
+        <view class="stat-number">{{correctCount}}</view>
+        <view class="stat-label">已掌握</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{wrongCount}}</view>
+        <view class="stat-label">需复习</view>
+      </view>
+    </view>
+    <button class="back-btn btn-secondary" bindtap="goBack">返回</button>
+  </view>
+</view>
