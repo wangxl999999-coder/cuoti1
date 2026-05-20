@@ -39,6 +39,30 @@ Page({
     this.initRecorder()
   },
 
+  onShow() {
+    this.resetForm()
+  },
+
+  resetForm() {
+    this.setData({
+      inputMethod: 'text',
+      question: '',
+      questionImage: '',
+      voicePath: '',
+      isRecording: false,
+      recordDuration: 0,
+      subjectIndex: -1,
+      gradeIndex: -1,
+      defaultKnowledge: [],
+      selectedKnowledge: [],
+      customTag: '',
+      errorReason: '',
+      difficulty: 3,
+      wrongAnswer: '',
+      correctAnswer: ''
+    })
+  },
+
   onUnload() {
     if (this.data.recordTimer) {
       clearInterval(this.data.recordTimer)
