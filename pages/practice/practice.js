@@ -21,11 +21,7 @@ Page({
   },
 
   onLoad(options) {
-    const questions = app.getWrongQuestions()
-    const subjects = Object.entries(app.globalData.subjects).map(([key, value]) => ({ key, value }))
-    
-    this.setData({ allQuestions: questions, subjects })
-    this.applySelectFilter()
+    this.loadQuestions()
 
     if (options.id) {
       const id = parseInt(options.id)
@@ -36,6 +32,20 @@ Page({
       this.setData({ selectedIds: ids })
       this.startPractice()
     }
+  },
+
+  onShow() {
+    if (!this.data.currentQuestion) {
+      this.loadQuestions()
+    }
+  },
+
+  loadQuestions() {
+    const questions = app.getWrongQuestions()
+    const subjects = Object.entries(app.globalData.subjects).map(([key, value]) => ({ key, value }))
+    
+    this.setData({ allQuestions: questions, subjects })
+    this.applySelectFilter()
   },
 
   applySelectFilter() {
@@ -148,6 +158,13 @@ Page({
   },
 
   goBack() {
-    wx.navigateBack()
+    this.setData({
+      isCompleted: false,
+      practiceList: [],
+      selectedIds: [],
+      correctCount: 0,
+      wrongCount: 0
+    })
+    this.loadQuestions()
   }
 })

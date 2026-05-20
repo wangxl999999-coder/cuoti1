@@ -159,13 +159,19 @@
 
 .filter-label {
   font-size: 28rpx;
-  color: #666;
+  color: #333;
+  font-weight: 500;
   margin-bottom: 16rpx;
   display: block;
 }
 
 .tag-scroll {
   white-space: nowrap;
+}
+
+.tag-scroll .tag {
+  display: inline-block;
+  margin-right: 12rpx;
 }
 
 .question-select-list {
@@ -222,18 +228,26 @@
 .select-subject {
   font-size: 24rpx;
   margin-bottom: 8rpx;
+  transition: all 0.3s;
+}
+
+.subject-icon {
+  margin-right: 8rpx;
+}
+
+.subject-name {
   color: #999;
   transition: all 0.3s;
 }
 
-.select-item.selected .select-subject {
+.select-item.selected .subject-name {
   color: #4A90E2;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .select-text {
   font-size: 28rpx;
-  color: #666;
+  color: #999;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -242,7 +256,7 @@
 }
 
 .select-item.selected .select-text {
-  color: #1a1a1a;
+  color: #333;
   font-weight: 500;
 }
 

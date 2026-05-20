@@ -1,7 +1,7 @@
 <view class="container">
-  <view wx:if="{{!currentQuestion}}" class="empty-state">
-    <view class="empty-icon">🎯</view>
-    <view class="empty-text">选择错题开始练习</view>
+  <view wx:if="{{!currentQuestion && allQuestions.length === 0}}" class="empty-state">
+    <view class="empty-icon">📝</view>
+    <view class="empty-text">暂无错题，快去录入吧！</view>
   </view>
 
   <view wx:if="{{currentQuestion}}" class="practice-container">
@@ -68,7 +68,7 @@
     </view>
   </view>
 
-  <view wx:if="{{!currentQuestion && allQuestions.length > 0}}" class="select-section card">
+  <view wx:if="{{!currentQuestion && !isCompleted}}" class="select-section card">
     <view class="section-title">选择练习题目</view>
     
     <view class="filter-row">
@@ -85,8 +85,9 @@
       <view wx:for="{{filteredQuestions}}" wx:key="id" class="select-item {{selectedIds.includes(item.id) ? 'selected' : ''}}" bindtap="toggleSelect" data-id="{{item.id}}">
         <view class="select-checkbox">{{selectedIds.includes(item.id) ? '✓' : ''}}</view>
         <view class="select-content">
-          <view class="select-subject" style="color: {{getSubjectColor(item.subject)}}">
-            {{getSubjectIcon(item.subject)}} {{getSubjectName(item.subject)}}
+          <view class="select-subject">
+            <text class="subject-icon">{{getSubjectIcon(item.subject)}}</text>
+            <text class="subject-name">{{getSubjectName(item.subject)}}</text>
           </view>
           <view class="select-text">{{item.question}}</view>
         </view>
