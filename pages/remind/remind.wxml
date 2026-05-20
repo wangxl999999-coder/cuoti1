@@ -93,7 +93,7 @@
           <text class="interval-days">{{reviewIntervals[item]}}天后</text>
         </view>
       </view>
-    </div>
+    </view>
   </view>
 
   <view class="setting-section card">
